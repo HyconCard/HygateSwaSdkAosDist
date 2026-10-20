@@ -398,7 +398,7 @@ private fun MqttSection(vm: SampleViewModel) {
     var port by remember { mutableStateOf("1883") }
     var topic by remember { mutableStateOf("swa/test") }
     var qos by remember { mutableStateOf("1") }
-    var keepAlive by remember { mutableStateOf("10") }
+    var keepAlive by remember { mutableStateOf("60") }   // 장치 기본값
     var user by remember { mutableStateOf("") }
     var pass by remember { mutableStateOf("") }
 

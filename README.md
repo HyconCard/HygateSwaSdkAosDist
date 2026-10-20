@@ -27,7 +27,7 @@ Android Studio가 만든 프로젝트에는 보통 `FAIL_ON_PROJECT_REPOS`가 �
 
 ```kotlin
 dependencies {
-    implementation("kr.co.beinteractive.hygate:hygateswa-sdk:0.3.1")
+    implementation("kr.co.beinteractive.hygate:hygateswa-sdk:0.3.3")
 }
 ```
 
