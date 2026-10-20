@@ -27,7 +27,7 @@ Android Studio가 만든 프로젝트에는 보통 `FAIL_ON_PROJECT_REPOS`가 �
 
 ```kotlin
 dependencies {
-    implementation("kr.co.beinteractive.hygate:hygateswa-sdk:0.3.0")
+    implementation("kr.co.beinteractive.hygate:hygateswa-sdk:0.3.2")
 }
 ```
 
@@ -75,13 +75,34 @@ BLE·위치 권한은 SDK 매니페스트에서 자동으로 병합됩니다. �
 각 릴리스에 첨부된 `hygateswa-sdk-<버전>.zip` 안의 `README.md`에 있습니다.
 설치, 권한, 시작하기, 기능과 호출 함수, 데이터 모델, 꼭 알아야 할 동작, 오류 처리를 담고 있습니다.
 
+## 예제 앱
+
+`example/` 폴더에 **동작하는 예제 프로젝트**가 있습니다. 위와 똑같이 원격 좌표로 SDK를 받는
+구성이고, 버튼 하나가 SDK 함수 하나에 대응합니다.
+
+```bash
+git clone https://github.com/HyconCard/HygateSwaSdkAosDist.git
+# example/ 폴더를 Android Studio 에서 Open (New Project 아님) → 실기기에 Run
+```
+
+BLE가 필요하므로 에뮬레이터가 아닌 **실기기**에서 실행해야 합니다. 자세한 설명은
+`example/README.md`에 있습니다.
+
+| 파일 | 내용 |
+|---|---|
+| `SampleViewModel.kt` | **SDK 호출 전부.** 스캔·연결·인증·조회·설정 변경·예외 처리 |
+| `SampleScreen.kt` | 화면. 버튼과 입력 검증 표시 |
+| `SampleLog.kt` | 호출 결과와 예외 타입 로그 |
+| `MainActivity.kt` | 권한 요청(`SwaPermissions.required()`) |
+
 ## 이 저장소에 있는 것
 
 - 이 안내문
+- `example/` — 예제 프로젝트 소스
 - Releases에 올라가는 배포 패키지(`hygateswa-sdk-<버전>.zip`)
 - `maven/` — Gradle이 의존성을 받아가는 정적 maven 저장소
 
-소스 코드는 포함되지 않습니다.
+SDK 소스 코드는 포함되지 않습니다.
 
 ## 문의
 
