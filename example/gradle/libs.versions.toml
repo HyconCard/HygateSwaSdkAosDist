@@ -7,7 +7,7 @@ activityCompose = "1.13.0"
 composeBom = "2026.02.01"
 
 # HygateSWA SDK. 버전을 올릴 때는 이 숫자만 바꾼다.
-hygateswaSdk = "0.3.3"
+hygateswaSdk = "0.3.4"
 
 [libraries]
 hygateswa-sdk = { module = "kr.co.beinteractive.hygate:hygateswa-sdk", version.ref = "hygateswaSdk" }

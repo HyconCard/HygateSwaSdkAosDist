@@ -245,8 +245,17 @@ private fun ScanSection(state: SampleUiState, vm: SampleViewModel) {
             }
         }
         if (state.connectedAddress == null) {
+            ScanFilterFields(state, vm)
             Hint("장치가 안 보이면: 전원·거리·위치 권한(정확한 위치)을 확인하세요.")
-            state.devices.forEach { DeviceRow(it) { vm.connect(it.address) } }
+            val visible = state.devices.filter { state.scanFilter.matches(it) }
+            if (state.devices.isNotEmpty()) {
+                Text(
+                    if (state.scanFilter.isEmpty) "장치 ${state.devices.size}대"
+                    else "${visible.size} / ${state.devices.size}대 (필터 적용)",
+                    fontSize = 11.sp, color = Color.Gray,
+                )
+            }
+            visible.forEach { DeviceRow(it) { vm.connect(it.address) } }
         } else {
             Text(
                 "연결됨: ${state.connectedAddress}", fontSize = 13.sp,
@@ -254,6 +263,29 @@ private fun ScanSection(state: SampleUiState, vm: SampleViewModel) {
             )
         }
     }
+}
+
+/**
+ * 스캔 필터 입력. SDK 가 주소·이름·신호 세기를 각각 받으므로 칸도 각각 둔다.
+ *
+ * 스캔을 다시 시작하지 않고 **표시할 때** `SwaScanFilter.matches` 로 거른다. 그래야 입력을
+ * 지웠을 때 이미 찾은 장치가 그대로 다시 보인다.
+ */
+@Composable
+private fun ScanFilterFields(state: SampleUiState, vm: SampleViewModel) {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Field("MAC 일부", state.filterAddress, vm::setFilterAddress, Modifier.weight(1f))
+        Field("이름 일부", state.filterName, vm::setFilterName, Modifier.weight(1f))
+    }
+    Field("최소 RSSI (dBm, 비우면 전체)", state.filterMinRssi, vm::setFilterMinRssi)
+    Constraint(
+        rule = "MAC·이름은 부분 일치(대소문자·구분자 무시) · RSSI 는 그 값 이상만. 예: -70",
+        // 입력 도중의 "-" 는 아직 숫자가 아니므로 오류로 보지 않는다.
+        problem = "RSSI 가 숫자가 아닙니다".takeIf {
+            state.filterMinRssi.isNotBlank() && state.filterMinRssi != "-" &&
+                state.filterMinRssi.toIntOrNull() == null
+        },
+    )
 }
 
 @Composable

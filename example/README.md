@@ -12,7 +12,7 @@ SDK 를 직접 써 보는 앱이다. **버튼 하나가 SDK 함수 하나에 대
 maven { url = uri("https://hyconcard.github.io/HygateSwaSdkAosDist/maven") }
 
 // gradle/libs.versions.toml
-hygateswaSdk = "0.3.3"
+hygateswaSdk = "0.3.4"
 ```
 
 ## 쓰는 법

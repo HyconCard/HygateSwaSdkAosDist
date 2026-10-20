@@ -14,6 +14,7 @@ import kr.co.beinteractive.hygate.swa.SwaBle
 import kr.co.beinteractive.hygate.swa.SwaException
 import kr.co.beinteractive.hygate.swa.SwaLogger
 import kr.co.beinteractive.hygate.swa.SwaSession
+import kr.co.beinteractive.hygate.swa.SwaScanFilter
 import kr.co.beinteractive.hygate.swa.SwaSessionPolicy
 
 /** 화면이 그리는 상태. */
@@ -28,7 +29,22 @@ data class SampleUiState(
     val mtu: Int = 0,
     val revision12: Boolean = false,
     val busy: Boolean = false,
-)
+    /**
+     * 필터 입력은 **원시 문자열로** 들고 있는다. RSSI 를 Int 로만 보관하면 "-" 를 치는 순간
+     * 숫자가 아니라서 글자가 사라진다.
+     */
+    val filterAddress: String = "",
+    val filterName: String = "",
+    val filterMinRssi: String = "",
+) {
+    /** 화면이 쓰는 필터. 비어 있는 칸은 조건에서 빠진다. */
+    val scanFilter: SwaScanFilter
+        get() = SwaScanFilter(
+            address = filterAddress,
+            name = filterName,
+            minRssi = filterMinRssi.toIntOrNull(),
+        )
+}
 
 /**
  * SDK 호출을 전부 여기서 한다.
@@ -67,6 +83,18 @@ class SampleViewModel(application: Application) : AndroidViewModel(application) 
     fun refreshBluetooth() {
         state.value = state.value.copy(bluetoothEnabled = ble.isBluetoothEnabled)
     }
+
+    // ---------------------------------------------------------------- 필터
+    //
+    // 스캔은 필터 없이 돌리고 **표시할 때** SwaScanFilter.matches 로 거른다.
+    // ble.scan(filter) 로 방출 자체를 막을 수도 있지만, 그러면 필터를 바꿀 때마다 스캔을
+    // 다시 시작해야 해서 이미 찾은 장치가 사라진다.
+
+    fun setFilterAddress(v: String) { state.value = state.value.copy(filterAddress = v) }
+
+    fun setFilterName(v: String) { state.value = state.value.copy(filterName = v) }
+
+    fun setFilterMinRssi(v: String) { state.value = state.value.copy(filterMinRssi = v) }
 
     // ------------------------------------------------------------------ 스캔
 
