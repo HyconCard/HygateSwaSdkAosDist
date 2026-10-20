@@ -1,0 +1,90 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "kr.co.beinteractive.hygate",
+    "module": "hygateswa-sdk",
+    "version": "0.3.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.4.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.10.2"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "hygateswa-sdk-0.3.0.aar",
+          "url": "hygateswa-sdk-0.3.0.aar",
+          "size": 144026,
+          "sha512": "33a90f396f755fcaacbfd04965eaff36aa0b5d697834f84e76870ef4ae85a451d84ac5f1c445546730bf26e0302f3d3c108d7ba8482c2a56d2844cf7d2d48a6d",
+          "sha256": "632e15f3acf2affcb43fc28319ae4621005ee80bcce360d468fd2b2dc2df0227",
+          "sha1": "3e51151047d3eea1a71475c2926b7242d8698862",
+          "md5": "82f44a3d0a84d64ea5358f354d0768cd"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.10.2"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "hygateswa-sdk-0.3.0.aar",
+          "url": "hygateswa-sdk-0.3.0.aar",
+          "size": 144026,
+          "sha512": "33a90f396f755fcaacbfd04965eaff36aa0b5d697834f84e76870ef4ae85a451d84ac5f1c445546730bf26e0302f3d3c108d7ba8482c2a56d2844cf7d2d48a6d",
+          "sha256": "632e15f3acf2affcb43fc28319ae4621005ee80bcce360d468fd2b2dc2df0227",
+          "sha1": "3e51151047d3eea1a71475c2926b7242d8698862",
+          "md5": "82f44a3d0a84d64ea5358f354d0768cd"
+        }
+      ]
+    }
+  ]
+}
