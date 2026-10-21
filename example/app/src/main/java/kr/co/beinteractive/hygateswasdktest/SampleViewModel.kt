@@ -29,20 +29,17 @@ data class SampleUiState(
     val mtu: Int = 0,
     val revision12: Boolean = false,
     val busy: Boolean = false,
-    /**
-     * 필터 입력은 **원시 문자열로** 들고 있는다. RSSI 를 Int 로만 보관하면 "-" 를 치는 순간
-     * 숫자가 아니라서 글자가 사라진다.
-     */
+    /** 신호 세기는 슬라이더로 받으므로 `Int?` 다. `null` 은 제한 없음이다. */
     val filterAddress: String = "",
     val filterName: String = "",
-    val filterMinRssi: String = "",
+    val filterMinRssi: Int? = null,
 ) {
     /** 화면이 쓰는 필터. 비어 있는 칸은 조건에서 빠진다. */
     val scanFilter: SwaScanFilter
         get() = SwaScanFilter(
             address = filterAddress,
             name = filterName,
-            minRssi = filterMinRssi.toIntOrNull(),
+            minRssi = filterMinRssi,
         )
 }
 
@@ -94,7 +91,8 @@ class SampleViewModel(application: Application) : AndroidViewModel(application) 
 
     fun setFilterName(v: String) { state.value = state.value.copy(filterName = v) }
 
-    fun setFilterMinRssi(v: String) { state.value = state.value.copy(filterMinRssi = v) }
+    /** `null` 은 제한 없음. 슬라이더 하한에서 이 값이 온다. */
+    fun setFilterMinRssi(v: Int?) { state.value = state.value.copy(filterMinRssi = v) }
 
     // ------------------------------------------------------------------ 스캔
 

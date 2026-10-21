@@ -37,11 +37,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,6 +60,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kr.co.beinteractive.hygate.swa.SwaAdvertisement
+import kr.co.beinteractive.hygate.swa.SwaScanFilter
+import kr.co.beinteractive.hygate.swa.SwaScanFilterRange
 import kr.co.beinteractive.hygate.swa.protocol.SwaInstallLocationName
 import kr.co.beinteractive.hygate.swa.protocol.SwaMqttLimits
 import kr.co.beinteractive.hygate.swa.protocol.SwaNameViolation
@@ -277,15 +281,52 @@ private fun ScanFilterFields(state: SampleUiState, vm: SampleViewModel) {
         Field("MAC 일부", state.filterAddress, vm::setFilterAddress, Modifier.weight(1f))
         Field("이름 일부", state.filterName, vm::setFilterName, Modifier.weight(1f))
     }
-    Field("최소 RSSI (dBm, 비우면 전체)", state.filterMinRssi, vm::setFilterMinRssi)
-    Constraint(
-        rule = "MAC·이름은 부분 일치(대소문자·구분자 무시) · RSSI 는 그 값 이상만. 예: -70",
-        // 입력 도중의 "-" 는 아직 숫자가 아니므로 오류로 보지 않는다.
-        problem = "RSSI 가 숫자가 아닙니다".takeIf {
-            state.filterMinRssi.isNotBlank() && state.filterMinRssi != "-" &&
-                state.filterMinRssi.toIntOrNull() == null
-        },
-    )
+    Constraint(rule = "MAC·이름은 부분 일치. 대소문자와 구분자(:, -)를 무시합니다")
+    MinRssiSlider(state.filterMinRssi, vm::setFilterMinRssi)
+}
+
+/**
+ * 최소 신호 세기 슬라이더.
+ *
+ * 범위는 SDK 가 권장값으로 제공한다(`SwaScanFilterRange`). 장치 제약이 아니라
+ * 화면을 만들 때 쓰는 기준이라, 고객 앱도 이 상수를 그대로 쓰면 된다.
+ *
+ * **하한은 "제한 없음"으로 쓴다** — `minRssi = null`. 그러면 해제 버튼을 따로 두지 않아도 된다.
+ *
+ * 끄는 동안에는 지역 상태만 바꾸고 손을 뗄 때 확정한다. 매 프레임 상태를 올리면 장치 목록이
+ * 함께 다시 그려져 끌기가 뻣뻣해진다.
+ */
+@Composable
+private fun MinRssiSlider(current: Int?, onChange: (Int?) -> Unit) {
+    val min = SwaScanFilterRange.MIN_RSSI_DBM.toFloat()
+    val max = SwaScanFilterRange.MAX_RSSI_DBM.toFloat()
+    val steps = (SwaScanFilterRange.MAX_RSSI_DBM - SwaScanFilterRange.MIN_RSSI_DBM) /
+        SwaScanFilterRange.STEP_DBM - 1
+
+    // 밖에서 값이 바뀌면 끌던 위치도 따라와야 한다.
+    var dragValue by remember(current) { mutableFloatStateOf(current?.toFloat() ?: min) }
+    val unlimited = dragValue <= min
+
+    Column {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text("최소 신호 세기", fontSize = 13.sp, modifier = Modifier.weight(1f))
+            Text(
+                if (unlimited) "제한 없음" else "${dragValue.toInt()} dBm 이상",
+                fontSize = 13.sp,
+                color = if (unlimited) Color.Gray else MaterialTheme.colorScheme.primary,
+            )
+        }
+        Slider(
+            value = dragValue,
+            onValueChange = { dragValue = it },
+            onValueChangeFinished = {
+                onChange(dragValue.toInt().takeIf { it > SwaScanFilterRange.MIN_RSSI_DBM })
+            },
+            valueRange = min..max,
+            steps = steps,
+        )
+        Hint("왼쪽 끝은 제한 없음입니다.\n오른쪽으로 끌면 가까운 장치만 남습니다.")
+    }
 }
 
 @Composable
