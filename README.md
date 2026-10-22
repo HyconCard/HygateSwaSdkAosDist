@@ -19,20 +19,25 @@ dependencyResolutionManagement {
 }
 ```
 
-Android Studio가 만든 프로젝트에는 보통 `FAIL_ON_PROJECT_REPOS`가 들어 있습니다. 이 설정은
-모듈별 `build.gradle.kts`에 저장소를 적는 것을 금지하므로, **반드시 `settings.gradle.kts`의
-이 블록에 추가해야 합니다.**
-
 **2) SDK를 쓸 모듈에 의존성 추가**
 
 ```kotlin
 dependencies {
-    implementation("kr.co.beinteractive.hygate:hygateswa-sdk:0.3.5")
+    implementation("kr.co.beinteractive.hygate:hygateswa-sdk:1.0.0")
 }
 ```
 
-버전을 올릴 때는 숫자만 바꾸면 됩니다. 사용 가능한 버전은
-[Releases](../../releases)에서 확인하세요.
+**버전은 직접 적어 주세요.** `latest.release` 나 `0.3.+` 같은 동적 버전은 권하지 않습니다 —
+공급사가 배포하는 순간 고객 빌드의 SDK가 바뀝니다. 0.x 구간에서는 API 가 바뀌므로 특히 그렇습니다.
+
+최신 버전은 한 줄로 확인할 수 있습니다.
+
+```bash
+curl -s https://hyconcard.github.io/HygateSwaSdkAosDist/maven/kr/co/beinteractive/hygate/hygateswa-sdk/maven-metadata.xml | grep release
+```
+
+[Releases](../../releases)에서 버전별 변경 내용을 함께 볼 수 있습니다.
+올리기 전에 **깨지는 변경이 있는지 먼저 확인하세요.**
 
 ## 이 SDK로 할 수 있는 일
 
@@ -53,11 +58,8 @@ dependencies {
 | MQTT 계정 | `writeMqttUsername()` / `writeMqttPassword()` + `clear*` |
 
 쓰기 함수는 값을 보낸 뒤 **장치의 확정 결과를 기다리고 다시 읽어 확인한 다음** 반환합니다.
-결과를 따로 관찰할 코드가 필요 없습니다.
-
-> **실시간 모니터링은 제공하지 않습니다.** 이 장치는 기울기·진동 같은 실시간 센서 값을 BLE로
-> 내보내지 않습니다. 버튼 이벤트도 BLE가 아니라 서버(MQTT)로 전달됩니다. 이 SDK는 **장치
-> 설정**을 다룹니다.
+성공·실패는 반환값(`SwaConfigResult`)에 담겨 오므로, 결과를 알아내기 위한 콜백이나 알림
+구독을 따로 만들 필요가 없습니다.
 
 ## 요구 사항
 
@@ -82,7 +84,7 @@ BLE·위치 권한은 SDK 매니페스트에서 자동으로 병합됩니다. �
 
 ```bash
 git clone https://github.com/HyconCard/HygateSwaSdkAosDist.git
-# example/ 폴더를 Android Studio 에서 Open (New Project 아님) → 실기기에 Run
+# example/ 폴더를 Android Studio 에서 Open → 실기기에 Run
 ```
 
 BLE가 필요하므로 에뮬레이터가 아닌 **실기기**에서 실행해야 합니다. 자세한 설명은
@@ -117,5 +119,5 @@ SDK 소스 코드는 포함되지 않습니다.
 
 ## 라이선스
 
-독점 라이선스입니다. 배포 패키지 안의 `LICENSE.txt`를 참고하세요.
-재배포와 역공학은 허용되지 않습니다.
+SDK는 주식회사 비인터랙티브의 자산이며, **별도의 서면 계약에 따라 사용을 허가받은 경우에만**
+사용할 수 있습니다. 전문은 배포 패키지 안의 `LICENSE.txt` 에 있습니다.
